@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 # 设置中文字体
-plt.rcParams["font.sans-serif"]=["Source Han Serif CN"] #设置字体
+plt.rcParams["font.sans-serif"]=["Source Han Serif CN","SimSun"] #设置字体
 plt.rcParams["axes.unicode_minus"]=False #该语句解决图像中的“-”负号的乱码问题
 
 df = pd.read_excel('./附件.xlsx',header = 1,index_col=1)
@@ -37,7 +37,7 @@ ax1.set_zlabel('z')
 ax1.set_title('海水深度-坐标')
 
 
-ax1.set_box_aspect((4000,5000,400))
+ax1.set_box_aspect((4000,5000,100))
 
 
 surf1 = ax1.plot_surface(X, Y, Z, cmap=plt.cm.viridis)
