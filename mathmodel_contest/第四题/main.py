@@ -15,15 +15,60 @@ x = 1852*np.arange(0,4.01,0.02)
 y = 1852*np.arange(0,5.01,0.02)
 # x = np.arange(0,4.01,0.02)
 # y = np.arange(0,5.01,0.02)
-X,Y = np.meshgrid(x,y)
 
-# 一个nx3的矩阵
-xyz = list()
-for i in range(len(x)):
-    for j in range(len(y)):
-        xyz.append((x[i],y[j],Z[j][i]))
-xyz = np.array(xyz)
+def fit_plane(x,y,Z):
+    # 一个nx3的矩阵
+    xyz = list()
+    for i in range(len(x)):
+        for j in range(len(y)):
+            xyz.append((x[i],y[j],Z[j][i]))
+    xyz = np.array(xyz)
+    x = xyz[:,0]
+    y = xyz[:,1]
+    z = xyz[:,2]
 
+    N=len(x)
+
+    A = np.array([[sum(x ** 2), sum(x * y), sum(x)],
+                  [sum(x * y), sum(y ** 2), sum(y)],
+                  [sum(x), sum(y), N]])
+
+    B = np.array([[sum(x * z), sum(y * z), sum(z)]])
+
+    # 求解
+    X = np.linalg.solve(A, B.T)
+    print('平面拟合结果为：z = %.3f * x + %.3f * y + %.3f' % (X[0][0], X[1][0], X[2][0]))
+    return X[0][0],X[1][0],X[2][0]
+
+Para = fit_plane(x,y,Z)
+normal_vector = np.array([-Para[0],-Para[1],1])
+D0 = Para[0] * x[len(x)//2] + Para[1] * y[len(y)//2] + Para[2]
+print(D0)
+
+def calc_angle(v1,v2):
+    norm1 = np.linalg.norm(v1)
+    norm2 = np.linalg.norm(v2)
+    dot_product = np.dot(v1,v2)
+    cos_angle = dot_product / (norm1*norm2)
+    # 注意是rad值
+    angle = np.arccos(cos_angle)
+    return angle
+
+angle = calc_angle(normal_vector,np.array([0,0,1]))
+
+# -------------------------结果展示-------------------------------
+# fig1 = plt.figure()
+# ax1 = fig1.add_subplot(111, projection='3d')
+# ax1.set_xlabel("x")
+# ax1.set_ylabel("y")
+# ax1.set_zlabel("z")
+# # ax1.scatter(x, y, z, c='r', marker='o')
+# x_p = 1852*np.arange(0,4.01,0.02)
+# y_p = 1852*np.arange(0,5.01,0.02)
+# x_p, y_p = np.meshgrid(x_p, y_p)
+# z_p = X[0] * x_p + X[1] * y_p + X[2]
+# ax1.plot_wireframe(x_p, y_p, z_p, rstride=10, cstride=10)
+# plt.show()
 
 # 计算起伏特别小的那一条边最小二乘斜率
 def fit_line():
