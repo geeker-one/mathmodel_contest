@@ -37,7 +37,7 @@ ax1.set_zlabel('z')
 ax1.set_title('海水深度-坐标')
 
 
-ax1.set_box_aspect((4000,5000,100))
+ax1.set_box_aspect((4000,5000,400))
 
 
 surf1 = ax1.plot_surface(X, Y, Z, cmap=plt.cm.viridis)
